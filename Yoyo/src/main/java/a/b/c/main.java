@@ -42,13 +42,15 @@ public class main extends Activity {
         Eq myEq;
         SurfaceHolder surfaceHolder;
         volatile boolean running = false;
-        final int scale = 20;
+        final int scale = 40;
 
         private Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
         public MySurfaceView(Context context) {
             super(context);
             myEq = new binaryEq(null,"=",false);
+
+            paint.setTextSize(30);
 
             binaryEq LHS = new binaryEq(null, "+", false);
             ((binaryEq)myEq).add(LHS);
@@ -94,7 +96,6 @@ public class main extends Activity {
                     // draw equation
                     paint.setColor(Color.BLACK);
                     drawEq(canvas, myEq.getDrawInfo());
-                    canvas.drawText("weeee!", 100, 100, paint);
 
                     // draw buttons
                     //TODO ? use android buttons OR build our own on the the surface view?
