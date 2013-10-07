@@ -39,15 +39,27 @@ public class main extends Activity {
     class MySurfaceView extends SurfaceView implements Runnable{
 
         Thread thread = null;
-        Eq myEq = new binaryEq();
+        Eq myEq;
         SurfaceHolder surfaceHolder;
         volatile boolean running = false;
+        final int scale = 20;
 
         private Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
         public MySurfaceView(Context context) {
             super(context);
+            myEq = new binaryEq(null,"=",false);
+
+            binaryEq LHS = new binaryEq(null, "+", false);
+            ((binaryEq)myEq).add(LHS);
+            LHS.add(new Value(null,"A",false));
+            LHS.add(new Value(null,"B",false));
+            LHS.add(new Value(null,"C",false));
+            binaryEq RHS = new binaryEq(null, "/", false);
+            RHS.add(new Value(null,"D",false));
+            RHS.add(new Value(null,"E",false));
             surfaceHolder = getHolder();
+            ((binaryEq)myEq).add(RHS);
         }
 
         public void onResumeMySurfaceView(){
@@ -80,7 +92,9 @@ public class main extends Activity {
                     canvas.drawRect(0,0,canvas.getWidth(),canvas.getHeight(),paint);
 
                     // draw equation
+                    paint.setColor(Color.BLACK);
                     drawEq(canvas, myEq.getDrawInfo());
+                    canvas.drawText("weeee!", 100, 100, paint);
 
                     // draw buttons
                     //TODO ? use android buttons OR build our own on the the surface view?
@@ -92,13 +106,11 @@ public class main extends Activity {
 
         private void drawEq(Canvas canvas, EqDraw drawInfo) {
             //TODO
-
+            float baseX = (canvas.getWidth() - drawInfo.maxX*scale)/2;
+            float baseY = (canvas.getHeight() - drawInfo.maxY*scale)/2;
             for (int i =0; i <drawInfo.myEqs.size();i++){
-                Log.i("draw info", drawInfo.myEqs.get(i).x + " , " + drawInfo.myEqs.get(i).y + " , " + drawInfo.myEqs.get(i).nam + " , " + drawInfo.myEqs.get(i).selected);
+                canvas.drawText( drawInfo.myEqs.get(i).nam,baseX +  drawInfo.myEqs.get(i).x*scale,baseY + drawInfo.myEqs.get(i).y*scale,paint);
             }
         }
-
     }
-
-
 }
