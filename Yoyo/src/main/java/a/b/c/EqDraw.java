@@ -19,6 +19,5 @@ public class EqDraw {
         this.maxX = maxX;
         this.maxY = maxY;
         myEqs = eqDrawRows;
-
     }
 }

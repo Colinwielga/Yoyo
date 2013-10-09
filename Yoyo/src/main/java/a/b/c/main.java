@@ -9,40 +9,61 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
 
-public class main extends Activity {
+// this is a little rapper around our custom SurfaceView.. i got i out of some random tutorial
+// i think we want so the surfaceView can act like an activity (a screen in an app)
+// we don't want the surface to be an activity anyway, since that would not allow us to overlay buttons over it
+
+public class main extends Activity implements View.OnTouchListener {
 
     MySurfaceView mySurfaceView;
 
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        // load the previous state
         super.onCreate(savedInstanceState);
+        // create the surfaceView
         mySurfaceView = new MySurfaceView(this);
+        // listen for touches on the surface
+        mySurfaceView.setOnTouchListener(this);
+        // show the surface to the user (or somethings)
         setContentView(mySurfaceView);
     }
 
+    // resume the app
     @Override
     protected void onResume() {
         super.onResume();
         mySurfaceView.onResumeMySurfaceView();
     }
 
+    // pause the app
     @Override
     protected void onPause() {
         super.onPause();
         mySurfaceView.onPauseMySurfaceView();
     }
 
+    @Override
+    public boolean onTouch(View view, MotionEvent motionEvent) {
+        // pass the touch event on to the surface
+        mySurfaceView.onTouch(motionEvent);
+        return true;
+    }
+
+    // this surfaceView is the main thing the use interacts with, it draws what the user sees and handles their inputs
     class MySurfaceView extends SurfaceView implements Runnable{
 
         Thread thread = null;
         Eq myEq;
         SurfaceHolder surfaceHolder;
         volatile boolean running = false;
-        final int scale = 40;
+        final float scale = 40;
 
         private Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
@@ -52,6 +73,7 @@ public class main extends Activity {
 
             paint.setTextSize(30);
 
+            //create a eq to test with
             binaryEq LHS = new binaryEq(null, "+", false);
             ((binaryEq)myEq).add(LHS);
             LHS.add(new Value(null,"A",false));
@@ -59,7 +81,10 @@ public class main extends Activity {
             LHS.add(new Value(null,"C",false));
             binaryEq RHS = new binaryEq(null, "/", false);
             RHS.add(new Value(null,"D",false));
-            RHS.add(new Value(null,"E",false));
+            binaryEq RHSB = new binaryEq(null, "*", false);
+            RHSB.add(new Value(null,"E",false));
+            RHSB.add(new Value(null,"F",false));
+            RHS.add(RHSB);
             surfaceHolder = getHolder();
             ((binaryEq)myEq).add(RHS);
         }
@@ -110,8 +135,17 @@ public class main extends Activity {
             float baseX = (canvas.getWidth() - drawInfo.maxX*scale)/2;
             float baseY = (canvas.getHeight() - drawInfo.maxY*scale)/2;
             for (int i =0; i <drawInfo.myEqs.size();i++){
-                canvas.drawText( drawInfo.myEqs.get(i).nam,baseX +  drawInfo.myEqs.get(i).x*scale,baseY + drawInfo.myEqs.get(i).y*scale,paint);
+                paint.setColor((drawInfo.myEqs.get(i).myEq.select?Color.BLUE:Color.RED));
+                drawInfo.myEqs.get(i).draw(canvas,baseX,baseY,scale,paint);
             }
+        }
+
+        public boolean onTouch(MotionEvent motionEvent) {
+            if (!myEq.touch(motionEvent)){
+                // todo this should only happen on touch up if they have not selected anything
+                myEq.deSelect();
+            }
+            return true;
         }
     }
 }

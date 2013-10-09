@@ -52,7 +52,7 @@ public class binaryEq extends Eq{
                 atX = atX + allInfo[i].maxX;
                 if (i <params.size()-1){
                     atX++;
-                    functionInfo[i] = new EqDrawRow(atX,0,name,select);
+                    functionInfo[i] = new EqDrawRow(atX,0,name,select,this);
                     atX++;
                 }
             }
@@ -82,7 +82,7 @@ public class binaryEq extends Eq{
                 atY = atY + allInfo[i].maxY;
                 if (i <params.size()-1){
                     atY++;
-                    functionInfo[i] = new EqDrawRow(0,atY,name,select);
+                    functionInfo[i] = new EqDrawRow(0,atY,name,select,this);
                     atY++;
                 }
             }

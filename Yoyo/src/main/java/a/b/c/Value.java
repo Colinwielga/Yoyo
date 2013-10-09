@@ -15,7 +15,7 @@ public class Value extends Eq {
     public EqDraw getDrawInfo(){
         //TODO needs to take in to account the number of characters we are trying to draw
         ArrayList<EqDrawRow> eqDrawRows = new ArrayList<EqDrawRow>();
-        eqDrawRows.add(new EqDrawRow(0,0,name,select));
+        eqDrawRows.add(new EqDrawRow(0,0,name,select,this));
         return new EqDraw(0,0,eqDrawRows);
     }
 
